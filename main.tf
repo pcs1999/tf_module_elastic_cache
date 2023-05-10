@@ -1,6 +1,6 @@
 resource "aws_elasticache_subnet_group" "subnet_group" {
 
-  name       = "${var.env}-elasticache_subnet_group"
+  name       = "${var.env}-elasticache-subnet-group"
   subnet_ids = var.subnet_ids
   tags       = merge (local.common_tags, { Name = "${var.env}-elasticache_subnet_group" } )
 
@@ -33,21 +33,17 @@ resource "aws_security_group" "elasticache" {
 
 }
 
-
-
-
 resource "aws_elasticache_replication_group" "elasticache" {
   replication_group_id       = "${var.env}-elasticache-cluster"
   description                = "${var.env}-elasticache-cluster"
   node_type                  = var.node_type
   port                       = 6379
-  parameter_group_name       = "default.redis3.2.cluster.on"
   automatic_failover_enabled = true
   subnet_group_name          = aws_elasticache_subnet_group.subnet_group.name
   security_group_ids         = [aws_security_group.elasticache.id]
-
   num_node_groups            = var.num_node_groups
   replicas_per_node_group    = var.replicas_per_node_group
+
   tags                       = merge (local.common_tags, { Name = "${var.env}-elasticache_subnet_group" } )
 
 }
